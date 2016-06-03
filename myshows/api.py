@@ -103,3 +103,7 @@ class session(object):
 		url = urljoin(HOST, SEARCH)
 		data = {'q':q}
 		return self.__call(url, data)
+
+	def genres(self):
+		url = urljoin(HOST, GENRES)
+		return self.__call(url)
