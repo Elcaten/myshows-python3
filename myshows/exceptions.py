@@ -1,9 +1,8 @@
 class MyShowsException(Exception):
-	pass
+    pass
 
 class MyShowsAuthentificationFailedException(MyShowsException):
-	pass
+    pass
 
 class MyShowsAuthentificationRequiredException(MyShowsException):
-	pass
-	
+    pass
