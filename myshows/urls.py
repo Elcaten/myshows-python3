@@ -1,6 +1,7 @@
 HOST = 'https://api.myshows.me/'
 LOGIN = 'profile/login'
 SHOWS = 'shows/'
+SEARCH = SHOWS + 'search/'
 
 PROFILE = 'profile/'
 PROFILE_SHOWS = PROFILE + SHOWS

@@ -1,7 +1,7 @@
 from myshows.urls import *
 from myshows.exceptions import *
 
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlencode
 from urllib.error import HTTPError
 
 VERSION = '0.0.1'
@@ -12,10 +12,7 @@ class myshowsloginbase(object):
 		self._credentials = {}
 		self._opener = None
 
-	def login(self):
-		from urllib.error import HTTPError
-		from urllib.parse import urljoin, urlencode
-		
+	def login(self):		
 		try:
 			url = urljoin(HOST, self._login_url) + '?' + urlencode(self._credentials)
 			r = self._opener.open(url)
@@ -56,7 +53,10 @@ class session(object):
 		self._login.login()
 		self._opener = _login.opener()
 
-	def __call(self, url):
+	def __call(self, url, credentials=None):
+		if credentials:
+			data = urlencode(credentials)
+			url = url + '?' + data
 		try:
 			r = self._opener.open(url)
 		except HTTPError as error:
@@ -88,6 +88,7 @@ class session(object):
 		url = urljoin(HOST, PROFILE_UNWATCHED)
 		return self.__call(url)
 
+	# without auth methods 
 	def shows(self, episode_id):
 		url = urljoin(HOST, SHOWS) + str(episode_id)
 		return self.__call(url)
@@ -97,3 +98,8 @@ class session(object):
 			return None
 		url = urljoin(HOST, PROFILE) + username
 		return self.__call(url)
+
+	def search(self, q):
+		url = urljoin(HOST, SEARCH)
+		data = {'q':q}
+		return self.__call(url, data)
