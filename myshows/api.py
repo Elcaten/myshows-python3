@@ -91,3 +91,9 @@ class session(object):
 	def shows(self, episode_id):
 		url = urljoin(HOST, SHOWS) + str(episode_id)
 		return self.__call(url)
+
+	def user_profile(self, username):
+		if not username:
+			return None
+		url = urljoin(HOST, PROFILE) + username
+		return self.__call(url)
