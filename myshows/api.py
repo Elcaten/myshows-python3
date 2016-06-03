@@ -1,10 +1,10 @@
 from myshows.urls import *
 from myshows.exceptions import *
 
-from urllib.parse import urljoin, urlencode
 from urllib.error import HTTPError
+from urllib.parse import urljoin, urlencode
 
-VERSION = '0.0.1'
+VERSION = '0.0.2'
 
 class myshowsloginbase(object):
 	def __init__(self):
@@ -51,7 +51,6 @@ class session(object):
 		if not self._login:
 			raise MyShowsAuthentificationRequiredException()
 		self._login.login()
-		self._opener = _login.opener()
 
 	def __call(self, url, credentials=None):
 		if credentials:
@@ -72,8 +71,13 @@ class session(object):
 		data = r.read().decode('utf-8')
 		return loads(data)
 
+	def __join(self, path):
+		if not path:
+			return None
+		return urljoin(HOST, path)
+
 	def profile(self):
-		url = urljoin(HOST, PROFILE)
+		url = self.__join(PROFILE)
 		return self.__call(url)
 
 	def profile_shows(self, episode_id=None):
@@ -81,29 +85,29 @@ class session(object):
 		return self.__call(url)
 
 	def profile_next(self):
-		url = urljoin(HOST, PROFILE_NEXT)
+		url = self.__join(PROFILE_NEXT)
 		return self.__call(url)
 
 	def profile_unwatched(self):
-		url = urljoin(HOST, PROFILE_UNWATCHED)
+		url = self.__join(PROFILE_UNWATCHED)
 		return self.__call(url)
 
 	# without auth methods 
 	def shows(self, episode_id):
-		url = urljoin(HOST, SHOWS) + str(episode_id)
+		url = self.__join(SHOWS) + str(episode_id)
 		return self.__call(url)
 
 	def user_profile(self, username):
 		if not username:
 			return None
-		url = urljoin(HOST, PROFILE) + username
+		url = self.__join(PROFILE) + username
 		return self.__call(url)
 
 	def search(self, q):
-		url = urljoin(HOST, SEARCH)
+		url = self.__join(SEARCH)
 		data = {'q':q}
 		return self.__call(url, data)
 
 	def genres(self):
-		url = urljoin(HOST, GENRES)
+		url = self.__join(GENRES)
 		return self.__call(url)
