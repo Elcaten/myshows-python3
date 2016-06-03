@@ -6,3 +6,4 @@ class MyShowsAuthentificationFailedException(MyShowsException):
 
 class MyShowsAuthentificationRequiredException(MyShowsException):
 	pass
+	

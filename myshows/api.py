@@ -111,3 +111,4 @@ class session(object):
 	def genres(self):
 		url = self.__join(GENRES)
 		return self.__call(url)
+		
