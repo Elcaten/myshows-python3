@@ -6,14 +6,53 @@ from urllib.error import HTTPError
 
 VERSION = '0.0.1'
 
+class myshowsloginbase(object):
+	def __init__(self):
+		self._login_url = ''
+		self._credentials = {}
+		self._opener = None
+
+	def login(self):
+		from urllib.error import HTTPError
+		from urllib.parse import urljoin, urlencode
+		
+		try:
+			url = urljoin(HOST, self._login_url) + '?' + urlencode(self._credentials)
+			r = self._opener.open(url)
+		except HTTPError as error:
+			raise MyShowsAuthentificationFailedException()
+
+	def md5(self, string):
+		from hashlib import md5
+		return md5(string.encode('utf-8')).hexdigest()
+
+class myshowslogin(myshowsloginbase):
+	def __init__(self, login, password, opener):
+		super(myshowslogin, self).__init__()
+		self._login_url = LOGIN
+		self._opener = opener
+
+		if not login:
+			raise ValueError('Empty login')
+		if not password:
+			raise ValueError('Empty password')
+
+		self._credentials['login'] = login
+		self._credentials['password'] = self.md5(password)
+
 class session(object):
+	def __init__(self):
+		from http.cookiejar import CookieJar
+		from urllib.request import build_opener, HTTPCookieProcessor
+		self._opener = build_opener(HTTPCookieProcessor(CookieJar()))
+
 	def login(self, login, password):
-		self._login = myshowslogin(login, password)
+		self._login = myshowslogin(login, password, self._opener)
 		self.__login()
 
 	def __login(self):
-		if not self.login:
-			raise MyShowsAuthentificationFailedException()
+		if not self._login:
+			raise MyShowsAuthentificationRequiredException()
 		self._login.login()
 		self._opener = _login.opener()
 
@@ -52,42 +91,3 @@ class session(object):
 	def shows(self, episode_id):
 		url = urljoin(HOST, SHOWS) + str(episode_id)
 		return self.__call(url)
-
-class myshowsloginbase(object):
-	def __init__(self):
-		from http.cookiejar import CookieJar
-		from urllib.request import build_opener, HTTPCookieProcessor
-
-		self._login_url = ''
-		self._credentials = {}
-		self._opener = build_opener(HTTPCookieProcessor(CookieJar()))
-
-	def opener(self):
-		return self._opener
-
-	def login(self):
-		from urllib.error import HTTPError
-		from urllib.parse import urljoin, urlencode
-		
-		try:
-			url = urljoin(HOST, self._login_url) + '?' + urlencode(self._credentials)
-			r = self._opener.open(url)
-		except HTTPError as error:
-			raise MyShowsAuthentificationFailedException()
-
-	def md5(self, string):
-		from hashlib import md5
-		return md5(string.encode('utf-8')).hexdigest()
-
-class myshowslogin(myshowsloginbase):
-	def __init__(self, login, password):
-		super(myshowslogin, self).__init__()
-		self._login_url = LOGIN
-
-		if not login:
-			raise ValueError('Empty login')
-		if not password:
-			raise ValueError('Empty password')
-
-		self._credentials['login'] = login
-		self._credentials['password'] = self.md5(password)
