@@ -5,12 +5,13 @@ from urllib.error import HTTPError
 from urllib.parse import urljoin, urlencode
 
 VERSION = '0.0.2'
+SHOW_STATUS = ['watching', 'cancelled', 'later', 'remove']
 
 class myshowsloginbase(object):
     def __init__(self):
+        self._opener = None
         self._login_url = ''
         self._credentials = {}
-        self._opener = None
 
     def login(self):        
         try:
@@ -52,7 +53,7 @@ class session(object):
             raise MyShowsAuthentificationRequiredException()
         self._login.login()
 
-    def __call(self, url, credentials=None):
+    def __call(self, url, credentials=None, json=True):
         if credentials:
             data = urlencode(credentials)
             url = url + '?' + data
@@ -62,11 +63,16 @@ class session(object):
             code = error.getcode()
             if code == 401:
                 raise MyShowsAuthentificationRequiredException()
+            elif code == 404:
+                raise MyShowsInvalidParametersException()
             else:
                 raise MyShowsException()
         except:
             raise MyShowsException()
 
+        if json == False:
+            return True
+            
         from json import loads
         data = r.read().decode('utf-8')
         return loads(data)
@@ -80,9 +86,19 @@ class session(object):
         url = self.__join(PROFILE)
         return self.__call(url)
 
-    def profile_shows(self, episode_id=None):
-        url = urljoin(HOST, PROFILE_SHOWS) + str(episode_id) + '/' if episode_id else urljoin(HOST, PROFILE_SHOWS)
+    def profile_shows(self, shows_id=None):
+        url = self.__join(PROFILE_SHOWS) + str(shows_id) + '/' if shows_id else self.__join(PROFILE_SHOWS)
         return self.__call(url)
+
+    # status = ['watching', 'cancelled', 'later', 'remove']
+    def profile_shows_status(self, shows_id, status):
+        if status not in SHOW_STATUS:
+            return None
+        if not shows_id:
+            return None
+        url = self.__join(PROFILE_SHOWS) + str(shows_id) + '/' + status
+        r = self.__call(url, json=False)
+        return True
 
     def profile_next(self):
         url = self.__join(PROFILE_NEXT)
@@ -93,8 +109,8 @@ class session(object):
         return self.__call(url)
 
     # without auth methods 
-    def shows(self, episode_id):
-        url = self.__join(SHOWS) + str(episode_id)
+    def shows(self, shows_id):
+        url = self.__join(SHOWS) + str(shows_id)
         return self.__call(url)
 
     def user_profile(self, username):
