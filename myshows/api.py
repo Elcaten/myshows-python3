@@ -67,8 +67,8 @@ class session(object):
         if not shows_id:
             return None
         url = self.__join(PROFILE_SHOWS) + str(shows_id) + '/' + status
-        r = self.__call(url, json=False)
-        return True
+        response = self.__call(url, json=False)
+        return response
 
     def profile_next(self):
         url = self.__join(PROFILE_NEXT)
