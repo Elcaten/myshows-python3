@@ -42,7 +42,7 @@ class session(object):
         elif code == 404:
             raise MyShowsInvalidParametersException()
 
-        if not json:
+        if json == False:
             return True
         return response.json()
 
