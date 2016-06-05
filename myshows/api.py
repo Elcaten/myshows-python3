@@ -1,14 +1,12 @@
 from myshows.urls import *
 from myshows.exceptions import *
 
-from requests import Session
-from urllib.error import HTTPError
-
 VERSION = '0.0.2'
 SHOW_STATUS = ['watching', 'cancelled', 'later', 'remove']
 
 class session(object):
     def __init__(self):
+        from requests import Session
         self._session = Session()
 
     def md5(self, string):
