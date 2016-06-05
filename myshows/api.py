@@ -1,85 +1,55 @@
 from myshows.urls import *
 from myshows.exceptions import *
 
+from requests import Session
 from urllib.error import HTTPError
-from urllib.parse import urljoin, urlencode
 
 VERSION = '0.0.2'
 SHOW_STATUS = ['watching', 'cancelled', 'later', 'remove']
 
-class myshowsloginbase(object):
+class session(object):
     def __init__(self):
-        self._opener = None
-        self._login_url = ''
-        self._credentials = {}
-
-    def login(self):        
-        try:
-            url = urljoin(HOST, self._login_url) + '?' + urlencode(self._credentials)
-            r = self._opener.open(url)
-        except HTTPError as error:
-            raise MyShowsAuthentificationFailedException()
+        self._session = Session()
 
     def md5(self, string):
         from hashlib import md5
         return md5(string.encode('utf-8')).hexdigest()
 
-class myshowslogin(myshowsloginbase):
-    def __init__(self, login, password, opener):
-        super(myshowslogin, self).__init__()
-        self._login_url = LOGIN
-        self._opener = opener
-
+    def login(self, login, password):
         if not login:
             raise ValueError('Empty login')
         if not password:
             raise ValueError('Empty password')
 
-        self._credentials['login'] = login
-        self._credentials['password'] = self.md5(password)
+        credentials = {}
+        credentials['login'] = login
+        credentials['password'] = self.md5(password)
 
-class session(object):
-    def __init__(self):
-        from http.cookiejar import CookieJar
-        from urllib.request import build_opener, HTTPCookieProcessor
-        self._opener = build_opener(HTTPCookieProcessor(CookieJar()))
+        url = self.__join(LOGIN) + '?'
+        self.__call(url, params=credentials, json=False)
 
-    def login(self, login, password):
-        self._login = myshowslogin(login, password, self._opener)
-        self.__login()
-
-    def __login(self):
-        if not self._login:
-            raise MyShowsAuthentificationRequiredException()
-        self._login.login()
-
-    def __call(self, url, credentials=None, json=True):
-        if credentials:
-            data = urlencode(credentials)
-            url = url + '?' + data
+    def __call(self, url, params=None, json=True):
         try:
-            r = self._opener.open(url)
-        except HTTPError as error:
-            code = error.getcode()
-            if code == 401:
-                raise MyShowsAuthentificationRequiredException()
-            elif code == 404:
-                raise MyShowsInvalidParametersException()
-            else:
-                raise MyShowsException()
+            response = self._session.get(url, params=params)
         except:
             raise MyShowsException()
 
-        if json == False:
+        code = response.status_code
+        if code == 401:
+            raise MyShowsAuthentificationRequiredException('Auth Required')
+        elif code == 403:
+            raise MyShowsAuthentificationFailedException('Auth Failed')
+        elif code == 404:
+            raise MyShowsInvalidParametersException()
+
+        if not json:
             return True
-            
-        from json import loads
-        data = r.read().decode('utf-8')
-        return loads(data)
+        return response.json()
 
     def __join(self, path):
         if not path:
             return None
+        from urllib.parse import urljoin
         return urljoin(HOST, path)
 
     def profile(self):
