@@ -5,7 +5,7 @@ This is a myshows.me Python API.
 ```
 pip install myshows
 ```
-# Usage
+# Usage APIv1 (incomplete support, but with auth)
 ```python
 >>> import myshows
 >>> api = myshows.session()
@@ -18,3 +18,14 @@ pip install myshows
 ```
 
 See https://api.myshows.me for detailed API guide.
+
+# Usage APIv2 (complete support, but without auth (oauth later))
+```python
+>>> import myshows
+>>> api = myshows.apiv2_beta()
+>>> response = api.shows.GetById(showId=1).json()
+>>> response['result']['originalTitle']
+'House'
+```
+
+See https://api.myshows.me/shared/doc/ for detailed API guide.

@@ -9,3 +9,5 @@ PROFILE_SHOWS = PROFILE + SHOWS
 PROFILE_NEWS = PROFILE + 'news/'
 PROFILE_UNWATCHED = PROFILE + 'episodes/unwatched/'
 PROFILE_NEXT = PROFILE + 'episodes/next/'
+
+APIV2 = 'https://api.myshows.me/v2/rpc/'

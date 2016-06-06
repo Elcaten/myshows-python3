@@ -1,14 +1,11 @@
 import os
 import sys
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 import myshows
 from myshows.exceptions import *
 from unittest import TestCase, main
-
-USER = ''
-PASSWORD = ''
-INCORRECT_PASSWORD = ''
 from test_config import USER, PASSWORD, INCORRECT_PASSWORD
 
 class MyShowsTestCase(TestCase):
@@ -42,8 +39,8 @@ class MyShowsTestCase(TestCase):
 
     # good
     def test_shows_one(self):
-        response = self.api.shows(1)['title']
-        self.assertEqual(response, 'House')
+        response = self.api.shows(1)
+        self.assertEqual(response['title'], 'House')
 
     def test_shows_status_later(self):
         response = self.api.login(USER, PASSWORD)
