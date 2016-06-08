@@ -19,8 +19,11 @@ class apiv2_beta(object):
         }
 
         from myshows.urls import APIV2
-        response = self._session.post(APIV2, json=jsonrpc).json()['result']
-        return response
+        response = self._session.post(APIV2, json=jsonrpc).json()
+        try:
+            return response['result']
+        except KeyError:
+            return response['error']
 
 class Call(object):
     __slots__ = ('_api', '_method_name', '_method_args')
