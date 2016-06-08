@@ -24,7 +24,7 @@ See https://api.myshows.me for detailed API guide.
 >>> import myshows
 >>> api = myshows.apiv2_beta()
 >>> response = api.shows.GetById(showId=1)
->>> response['originalTitle']
+>>> response['titleOriginal']
 'House'
 ```
 
