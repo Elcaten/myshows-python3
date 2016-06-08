@@ -15,9 +15,8 @@ class MyShowsV2APITestCase(TestCase):
 
     # test connect
     def test_connect(self):
-        response = self.api.shows.GetById(showId=1).json()
-        response = response['result']['title']
-        self.assertEqual(response, 'Доктор Хаус')
+        response = self.api.shows.GetById(showId=1)
+        self.assertEqual(response['title'], 'Доктор Хаус')
 
     # test with auth NOT WORK
     def test_with_auth(self):

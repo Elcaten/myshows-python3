@@ -19,7 +19,7 @@ class apiv2_beta(object):
         }
 
         from myshows.urls import APIV2
-        response = self._session.post(APIV2, json=jsonrpc)
+        response = self._session.post(APIV2, json=jsonrpc).json()['result']
         return response
 
 class Call(object):
