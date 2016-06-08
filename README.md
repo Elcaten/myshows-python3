@@ -23,8 +23,8 @@ See https://api.myshows.me for detailed API guide.
 ```python
 >>> import myshows
 >>> api = myshows.apiv2_beta()
->>> response = api.shows.GetById(showId=1).json()
->>> response['result']['originalTitle']
+>>> response = api.shows.GetById(showId=1)
+>>> response['originalTitle']
 'House'
 ```
 
