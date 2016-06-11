@@ -19,7 +19,7 @@ pip install myshows
 
 See https://api.myshows.me for detailed API guide.
 
-# Usage APIv2 (complete support, but without auth (oauth later))
+# Usage APIv2 (complete support, but without oauth)
 ```python
 >>> import myshows
 >>> api = myshows.apiv2_beta()
