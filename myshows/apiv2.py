@@ -1,8 +1,10 @@
-class apiv2_beta(object):
-    def __init__(self, **method_default_args):
-        from requests import Session
-        self._session = Session()
-        self._method_default_args = method_default_args
+class apiv2(object):
+    def __init__(self, oauth2session=None):
+        if oauth2session:
+            self._session = oauth2session
+        else:
+            from requests import Session
+            self._session = Session()
 
     def __getattr__(self, method_name):
         return Call(self, method_name)
@@ -20,6 +22,7 @@ class apiv2_beta(object):
 
         from myshows.urls import APIV2
         response = self._session.post(APIV2, json=jsonrpc).json()
+
         try:
             return response['result']
         except KeyError:

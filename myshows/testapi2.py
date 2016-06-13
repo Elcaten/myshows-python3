@@ -20,6 +20,8 @@ class MyShowsV2APITestCase(TestCase):
 
     # test with auth NOT WORK
     def test_with_auth(self):
+        response = self.api.auth()
+        print(response)
         response = self.api.manage.SetShowStatus(id=37473, status='later')
         self.assertEqual(401, response['code'])
         
