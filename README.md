@@ -22,7 +22,7 @@ See https://api.myshows.me for detailed API guide.
 # Usage APIv2 (complete support, but without auth (oauth later))
 ```python
 >>> import myshows
->>> api = myshows.apiv2_beta()
+>>> api = myshows.apiv2()
 >>> response = api.shows.GetById(showId=1)
 >>> response['titleOriginal']
 'House'
