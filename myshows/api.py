@@ -1,7 +1,7 @@
 from myshows.urls import *
 from myshows.exceptions import *
 
-VERSION = '0.0.3.3'
+VERSION = '0.0.3.5'
 SHOW_STATUS = ['watching', 'cancelled', 'later', 'remove']
 
 class session(object):
