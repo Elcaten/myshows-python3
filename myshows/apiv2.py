@@ -12,6 +12,10 @@ class apiv2(object):
     def __call__(self, method_name, **method_kwargs):
         return getattr(self, method_name)(**method_kwargs)
 
+    def auth_success(self):
+        from requests_oauthlib import OAuth2Session
+        return type(self._session) is OAuth2Session
+
     def request(self, request):
         jsonrpc = {
             'jsonrpc': '2.0',
