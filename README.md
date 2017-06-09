@@ -19,13 +19,17 @@ pip install myshows
 
 See https://api.myshows.me for detailed API guide.
 
-# Usage APIv2 (complete support, but without oauth)
+# Usage APIv2 (complete support)
 ```python
 >>> import myshows
 >>> api = myshows.apiv2()
 >>> response = api.shows.GetById(showId=1)
 >>> response['titleOriginal']
 'House'
+
+>>> api.login('<CLIENT_ID>', '<CLIENT_SECRET>')
+>>> api.manage.RateShow(id=35540, rating=4)
+True
 ```
 
 See https://api.myshows.me/shared/doc/ for detailed API guide.
