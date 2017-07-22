@@ -9,3 +9,6 @@ class MyShowsAuthentificationRequiredException(MyShowsException):
 
 class MyShowsInvalidParametersException(MyShowsException):
     pass
+
+class MyShowsRetrieveTokenException(MyShowsException):
+    pass

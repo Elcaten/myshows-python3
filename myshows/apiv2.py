@@ -1,10 +1,7 @@
 class apiv2(object):
-    def __init__(self, oauth2session=None):
-        if oauth2session:
-            self._session = oauth2session
-        else:
-            from requests import Session
-            self._session = Session()
+    def __init__(self):
+        from requests import Session
+        self._session = Session()
 
     def __getattr__(self, method_name):
         return Call(self, method_name)
@@ -12,9 +9,16 @@ class apiv2(object):
     def __call__(self, method_name, **method_kwargs):
         return getattr(self, method_name)(**method_kwargs)
 
-    def auth_success(self):
+    def login(self, client_id, client_secret):
+        if not client_id:
+            raise ValueError('Empty client id')
+        if not client_secret:
+            raise ValueError('Empty client secret')
+
         from requests_oauthlib import OAuth2Session
-        return type(self._session) is OAuth2Session
+        from myshows.auth import gettoken
+        token = gettoken(client_id, client_secret)
+        self._session = OAuth2Session(client_id, token=token)
 
     def request(self, request):
         jsonrpc = {

@@ -21,7 +21,12 @@ setup(
     description='This is a myshows.me Python API',
 
     packages=find_packages(),
-    install_requires='requests>=2.8,<3.0',
+    install_requires=[
+        'requests>=2.8,<3.0',
+        'oauthlib',
+        'requests_oauthlib',
+        'appdirs'
+    ],
 
     license='MIT License',
     classifiers=[
@@ -35,3 +40,10 @@ setup(
     ],
     keywords='myshows.me api myshows shows'
 )
+
+import os
+if os.name == 'nt':
+    import subprocess
+    scriptpath = os.path.abspath("windows/Register-OAuthCallbackURI.ps1")
+    command = f"Start-Process powershell -Verb RunAs -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-file', '{scriptpath}')"
+    subprocess.call(['powershell.exe', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', command])
